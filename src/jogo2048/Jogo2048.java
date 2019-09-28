@@ -13,23 +13,28 @@ public class Jogo2048 {
      */
     static int[][] matriz = new int[4][4];
     static Random aleatorio = new Random();
-    
+    static int pontuacao=0;
     public static void main(String[] args) {
         imprimirMatriz(matriz);
         gerarAleatorio(matriz);
         imprimirMatriz(matriz);
+        direita(matriz);
+        System.out.println("");
+        imprimirMatriz(matriz);
+        
         esquerda(matriz);
         System.out.println("");
         imprimirMatriz(matriz);
+        System.out.println("pontuacao: " + pontuacao);
         
     }
     
     public static void gerarAleatorio(int[][] matriz) {        
         
-        matriz[0][0]=32;
-        matriz[0][1]=8;
-        matriz[0][2]=2;
-        matriz[0][3]=4;
+        matriz[0][0]=0;
+        matriz[0][1]=0;
+        matriz[0][2]=8;
+        matriz[0][3]=8;
         int BlocoVisivel = 0;
         int linha0a3 = 0, coluna0a3 = 0, valor0a4 = 0, i = 0;
         
@@ -76,8 +81,9 @@ public class Jogo2048 {
                         matriz[i][aux - 1] = matriz[i][aux];
                         matriz[i][aux] = 0;
                     }
-                    if (matriz[i][aux - 1] == matriz[i][aux]) {
+                    if (matriz[i][aux - 1] == matriz[i][aux] && matriz[i][aux] != 0) {
                         matriz[i][aux - 1] += matriz[i][aux];
+                        pontuacao+=matriz[i][aux - 1];
                         matriz[i][aux] = 0;
                         flagSoma += 1;
                     } else {
@@ -91,6 +97,38 @@ public class Jogo2048 {
             }
             cont = 1;
             flagSoma = 0;
+        }
+    }
+    
+     public static void direita (int[][] matriz) {
+        int flagSoma = 3, aux = 0, cont = 2;
+        
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                aux = cont;
+                
+                while (aux < flagSoma) {
+                    
+                    if (matriz[i][aux + 1] == 0) {
+                        matriz[i][aux + 1] = matriz[i][aux];
+                        matriz[i][aux] = 0;
+                    }
+                    if (matriz[i][aux + 1] == matriz[i][aux] && matriz[i][aux] != 0) {
+                        matriz[i][aux + 1] += matriz[i][aux];
+                        pontuacao+=matriz[i][aux + 1];
+                        matriz[i][aux] = 0;
+                        flagSoma -= 1;
+                    } else {
+                        if (matriz[i][aux + 1] != 0 && matriz[i][aux] != 0) {
+                            flagSoma -= 1;
+                        }
+                    }
+                    aux += 1;
+                }
+                cont -= 1;
+            }
+            cont = 2;
+            flagSoma = 3;
         }
     }
 }
