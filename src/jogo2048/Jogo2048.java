@@ -20,7 +20,7 @@ public class Jogo2048 {
         gerarAleatorio(matriz);
         System.out.println("");
         imprimirMatriz(matriz);
-        cima(matriz);
+        baixo(matriz);
         System.out.println("");
         imprimirMatriz(matriz);
 
@@ -30,14 +30,14 @@ public class Jogo2048 {
 
     public static void gerarAleatorio(int[][] matriz) {
 
-        matriz[0][0] = 0;
+        matriz[0][0] = 8;
         matriz[1][0] = 0;
-        matriz[2][0] = 8;
-        matriz[3][0] = 8;
+        matriz[2][0] = 0;
+        matriz[3][0] = 0;
         int BlocoVisivel = 0;
         int linha0a3 = 0, coluna0a3 = 0, valor0a4 = 0, i = 0;
 
-        while (i < 8) {
+        while (i < 12) {
             do {
                 BlocoVisivel = 0;
                 linha0a3 = aleatorio.nextInt(4);
@@ -68,7 +68,7 @@ public class Jogo2048 {
         }
     }
 
-    public static void esquerda (int[][] matriz) {
+    public static void esquerda(int[][] matriz) {
         int flagSoma = 0, aux = 0, cont = 1;
 
         for (int i = 0; i < 4; i++) {
@@ -99,7 +99,7 @@ public class Jogo2048 {
         }
     }
 
-    public static void direita (int[][] matriz) {
+    public static void direita(int[][] matriz) {
         int flagSoma = 3, aux = 0, cont = 2;
 
         for (int i = 0; i < 4; i++) {
@@ -130,8 +130,8 @@ public class Jogo2048 {
             flagSoma = 3;
         }
     }
-    
-     public static void cima (int[][] matriz) {
+
+    public static void cima(int[][] matriz) {
         int flagSoma = 0, aux = 0, cont = 1;
 
         for (int i = 0; i < 4; i++) {
@@ -139,17 +139,17 @@ public class Jogo2048 {
                 aux = cont;
 
                 while (aux > flagSoma) {
-                    if (matriz[aux-1][i] == 0) {
-                        matriz[aux-1][i] = matriz[aux][i];
+                    if (matriz[aux - 1][i] == 0) {
+                        matriz[aux - 1][i] = matriz[aux][i];
                         matriz[aux][i] = 0;
                     }
-                    if (matriz[aux-1][i] == matriz[aux][i] && matriz[aux][i] != 0) {
-                        matriz[aux-1][i] += matriz[aux][i];
-                        pontuacao += matriz[aux-1][i];
+                    if (matriz[aux - 1][i] == matriz[aux][i] && matriz[aux][i] != 0) {
+                        matriz[aux - 1][i] += matriz[aux][i];
+                        pontuacao += matriz[aux - 1][i];
                         matriz[aux][i] = 0;
                         flagSoma += 1;
                     } else {
-                        if (matriz[aux-1][i] != 0 && matriz[aux][i] != 0) {
+                        if (matriz[aux - 1][i] != 0 && matriz[aux][i] != 0) {
                             flagSoma += 1;
                         }
                     }
@@ -159,6 +159,38 @@ public class Jogo2048 {
             }
             cont = 1;
             flagSoma = 0;
+        }
+    }
+    
+     public static void baixo (int[][] matriz) {
+        int flagSoma = 3, aux = 0, cont = 2;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                aux = cont;
+
+                while (aux < flagSoma) {
+
+                    if (matriz[aux+1][i] == 0) {
+                        matriz[aux+1][i] = matriz[aux][i];
+                        matriz[aux][i] = 0;
+                    }
+                    if (matriz[aux+1][i] == matriz[aux][i] && matriz[aux][i] != 0) {
+                        matriz[aux+1][i] += matriz[aux][i];
+                        pontuacao += matriz[aux+1][i];
+                        matriz[aux][i] = 0;
+                        flagSoma -= 1;
+                    } else {
+                        if (matriz[aux+1][i] != 0 && matriz[aux][i] != 0) {
+                            flagSoma -= 1;
+                        }
+                    }
+                    aux += 1;
+                }
+                cont -= 1;
+            }
+            cont = 2;
+            flagSoma = 3;
         }
     }
 }
