@@ -1,5 +1,6 @@
 package jogo2048;
 
+import controleDoJogo.TelaGraficaEDeControle;
 import java.util.Random;
 
 /**
@@ -16,7 +17,7 @@ public class Jogo2048 {
     static int pontuacao = 0;
 
     public static void main(String[] args) {
-        imprimirMatriz(matriz);
+      /*  imprimirMatriz(matriz);
         gerarAleatorio(matriz);
         System.out.println("");
         imprimirMatriz(matriz);
@@ -25,7 +26,8 @@ public class Jogo2048 {
         imprimirMatriz(matriz);
 
         System.out.println("\n\n Pontuacao: " + pontuacao);
-
+*/
+        TelaGraficaEDeControle telaGraficaEDeControle = new TelaGraficaEDeControle();
     }
 
     public static void gerarAleatorio(int[][] matriz) {
