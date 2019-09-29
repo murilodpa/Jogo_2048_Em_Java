@@ -29,8 +29,9 @@ public class TelaGraficaEDeControle extends JFrame {
 
         setTitle("JOGO 2048");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(676, 699);
-        // frame.setResizable(false);
+        setSize(676, 699);    
+        setLayout(null); 
+// frame.setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
         setVisible(true);
@@ -41,6 +42,8 @@ public class TelaGraficaEDeControle extends JFrame {
         telaDoJogo.setBounds(0, 0, 660, 660);
         add(telaDoJogo.getPainelLogo());
         add(telaDoJogo.getPainelPontuacao());
+        add(telaDoJogo.getPainelReiniciar());   
+        //add(telaDoJogo.getAutor());
         add(telaDoJogo);
     }
 

@@ -13,10 +13,14 @@ import javax.swing.SwingConstants;
 
 public final class TelaDoJogo extends JPanel {
 
-    private final Color cor1;
-    private final Color cor2;
-    private final JPanel painelLogo, painelPontuacao;
+    private Color cor1;
+    private Color cor2;
+    private JPanel painelLogo;
+    private JPanel painelPontuacao;
+    private JPanel painelReiniciar;
     private final JLabel nomeDoJogo, pontuacao;
+    private JLabel autor;
+    private JLabel reiniciar;
     private Integer valor;
 
     public TelaDoJogo() {
@@ -25,11 +29,18 @@ public final class TelaDoJogo extends JPanel {
 
         painelLogo = new JPanel();
         painelPontuacao = new JPanel();
+        painelReiniciar = new JPanel();
+
         valor = 2048;
 
         nomeDoJogo = new JLabel("2048", JLabel.CENTER);
-        pontuacao = new JLabel("html>! html>" + getValor(), JLabel.CENTER);
+        autor = new JLabel();
+        pontuacao = new JLabel("",JLabel.CENTER);
+        reiniciar = new JLabel("",JLabel.CENTER);
+
+        autor.setText("<html><center>MURILO ARAUJO<br></html>");
         pontuacao.setText("<html><center>PONTUAÇÃO<br>" + getValor() + "</html>");
+        reiniciar.setText("<html><center>NOVO JOGO"+"</html>");
 
         painelLogo.setLayout(new BorderLayout());
         painelLogo.add(nomeDoJogo);
@@ -38,6 +49,10 @@ public final class TelaDoJogo extends JPanel {
         painelPontuacao.setLayout(new BorderLayout());
         painelPontuacao.add(pontuacao);
         painelPontuacao.setBorder(javax.swing.BorderFactory.createLineBorder(Color.BLACK, 3));
+
+        painelReiniciar.setLayout(new BorderLayout());
+        painelReiniciar.add(reiniciar);
+        painelReiniciar.setBorder(javax.swing.BorderFactory.createLineBorder(Color.BLACK, 3));
     }
 
     public Color getCor1() {
@@ -55,7 +70,7 @@ public final class TelaDoJogo extends JPanel {
     public JLabel getNomeDoJogo() {
         return nomeDoJogo;
     }
-    
+
     /**
      * @return the pontuacao
      */
@@ -68,6 +83,90 @@ public final class TelaDoJogo extends JPanel {
      */
     public Integer getValor() {
         return valor;
+    }
+    
+     /**
+     * @return the painelPontuacao
+     */
+    public JPanel getPainelPontuacao() {
+        return painelPontuacao;
+    }
+
+    /**
+     * @param cor1 the cor1 to set
+     */
+    public void setCor1(Color cor1) {
+        this.cor1 = cor1;
+    }
+
+    /**
+     * @param cor2 the cor2 to set
+     */
+    public void setCor2(Color cor2) {
+        this.cor2 = cor2;
+    }
+
+    /**
+     * @param painelLogo the painelLogo to set
+     */
+    public void setPainelLogo(JPanel painelLogo) {
+        this.painelLogo = painelLogo;
+    }
+
+    /**
+     * @param painelPontuacao the painelPontuacao to set
+     */
+    public void setPainelPontuacao(JPanel painelPontuacao) {
+        this.painelPontuacao = painelPontuacao;
+    }
+
+    /**
+     * @return the painelReiniciar
+     */
+    public JPanel getPainelReiniciar() {
+        return painelReiniciar;
+    }
+
+    /**
+     * @param painelReiniciar the painelReiniciar to set
+     */
+    public void setPainelReiniciar(JPanel painelReiniciar) {
+        this.painelReiniciar = painelReiniciar;
+    }
+
+    /**
+     * @return the autor
+     */
+    public JLabel getAutor() {
+        return autor;
+    }
+
+    /**
+     * @param autor the autor to set
+     */
+    public void setAutor(JLabel autor) {
+        this.autor = autor;
+    }
+
+    /**
+     * @return the reiniciar
+     */
+    public JLabel getReiniciar() {
+        return reiniciar;
+    }
+
+    /**
+     * @param reiniciar the reiniciar to set
+     */
+    public void setReiniciar(JLabel reiniciar) {
+        this.reiniciar = reiniciar;
+    }
+
+    /**
+     * @param valor the valor to set
+     */
+    public void setValor(Integer valor) {
+        this.valor = valor;
     }
 
     
@@ -95,29 +194,37 @@ public final class TelaDoJogo extends JPanel {
         grafico.drawLine(450, 160, 450, 640);
         grafico.drawLine(570, 160, 570, 640);
 
-        getPainelLogo().setBounds(260, 5, 140, 140);
+        getPainelLogo().setBounds(265, 10, 130, 130);
         getPainelLogo().setBackground(Color.red);
         getPainelLogo().setVisible(true);
 
         getNomeDoJogo().setForeground(Color.BLACK);
         getNomeDoJogo().setBackground(Color.BLACK);
-        getNomeDoJogo().setFont(new Font("Arial", Font.BOLD, 60));
+        getNomeDoJogo().setFont(new Font("Arial", Font.BOLD, 53));
         getNomeDoJogo().setVisible(true);
 
-        getPainelPontuacao().setBounds(82, 35, 170, 110);
+        getPainelPontuacao().setBounds(82, 40, 170, 100);
         getPainelPontuacao().setBackground(Color.red);
         getPainelPontuacao().setVisible(true);
+        
+        getPainelReiniciar().setBounds(408, 40, 170, 100);
+        getPainelReiniciar().setBackground(Color.red);
+        getPainelReiniciar().setVisible(true);
 
         getPontuacao().setForeground(Color.BLACK);
         getPontuacao().setBackground(Color.BLACK);
         getPontuacao().setFont(new Font("Arial", Font.BOLD, 25));
         getPontuacao().setVisible(true);
-    }
 
-    /**
-     * @return the painelPontuacao
-     */
-    public JPanel getPainelPontuacao() {
-        return painelPontuacao;
+        getAutor().setForeground(Color.BLACK);
+        getAutor().setBackground(Color.BLACK);
+        getAutor().setFont(new Font("Arial", Font.BOLD, 25));
+        getAutor().setBounds(200, 300, 100, 100);
+        getAutor().setVisible(true);
+        
+        getReiniciar().setForeground(Color.BLACK);
+        getReiniciar().setBackground(Color.BLACK);
+        getReiniciar().setFont(new Font("Arial", Font.BOLD, 25));
+        getReiniciar().setVisible(true);
     }
 }
