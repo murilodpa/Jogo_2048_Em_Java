@@ -18,7 +18,6 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
      */
     static int[][] matriz = new int[4][4];
     static Random aleatorio = new Random();
-    static int pontuacao = 0;
 
     public MovimentacaoDosBlocos() {
     }
@@ -54,7 +53,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
     }
 
-    public static void esquerda(int[][] matriz) {
+    public static void esquerda(int[][] matriz, int pontuacao) {
         int flagSoma = 0, aux = 0, cont = 1;
 
         for (int i = 0; i < 4; i++) {
@@ -85,7 +84,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
     }
 
-    public static void direita(int[][] matriz) {
+    public static void direita(int[][] matriz, int pontuacao) {
         int flagSoma = 3, aux = 0, cont = 2;
 
         for (int i = 0; i < 4; i++) {
@@ -117,7 +116,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
     }
 
-    public static void cima(int[][] matriz) {
+    public static void cima(int[][] matriz, int pontuacao) {
         int flagSoma = 0, aux = 0, cont = 1;
 
         for (int i = 0; i < 4; i++) {
@@ -148,7 +147,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
     }
 
-    public static void baixo(int[][] matriz) {
+    public static void baixo(int[][] matriz, int pontuacao) {
         int flagSoma = 3, aux = 0, cont = 2;
 
         for (int i = 0; i < 4; i++) {
@@ -180,4 +179,51 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
     }
 
+    public int Perdeu(int[][] matriz, int pontuacao) {
+        int flagNaoPerdeu = 0, flagPerdeu = 1, pontos = 0;
+        int[][] matrizTeste = new int[4][4];
+
+        pontos = pontuacao;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (matriz[i][j] == 0) {
+                    return flagNaoPerdeu;
+                }
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (matriz[i][j] == 0) {
+                    return flagNaoPerdeu;
+                }
+                matrizTeste[i][j] = matriz[i][j];
+            }
+        }
+
+        esquerda(matrizTeste, pontos);
+        
+        if(pontos==pontuacao){
+        direita(matrizTeste, pontos);
+        } else {
+            return flagNaoPerdeu;
+        }
+        
+        if(pontos==pontuacao){
+        cima(matrizTeste, pontos);
+        } else {
+            return flagNaoPerdeu;
+        }
+        
+        if(pontos==pontuacao){
+        baixo(matrizTeste, pontos);
+        } else {
+            return flagNaoPerdeu;
+        }
+     
+        if(pontos==pontuacao){
+            return flagPerdeu;
+        }
+        return flagNaoPerdeu;
+    }
 }

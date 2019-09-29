@@ -40,6 +40,7 @@ public class TelaGraficaEDeControle extends JFrame {
         TelaDoJogo telaDoJogo = new TelaDoJogo();
         telaDoJogo.setBounds(0, 0, 660, 660);
         add(telaDoJogo.getPainelLogo());
+        add(telaDoJogo.getPainelPontuacao());
         add(telaDoJogo);
     }
 
