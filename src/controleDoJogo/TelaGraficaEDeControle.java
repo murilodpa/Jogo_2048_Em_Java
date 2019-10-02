@@ -1,10 +1,5 @@
 package controleDoJogo;
 
-import static controleDoJogo.MovimentacaoDosBlocos.baixo;
-import static controleDoJogo.MovimentacaoDosBlocos.cima;
-import static controleDoJogo.MovimentacaoDosBlocos.direita;
-import static controleDoJogo.MovimentacaoDosBlocos.esquerda;
-import static controleDoJogo.MovimentacaoDosBlocos.flagMover;
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
@@ -48,7 +43,7 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         addMouseListener(this);
     }
 
-    public void teste(Graphics2D g) {
+    public void telaDoJogo(Graphics2D g) {
         g.setColor(Color.red);
         g.fillRoundRect(265, 14, 135, 135, 25, 25);
         g.setColor(Color.BLACK);
@@ -56,30 +51,38 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         g.drawString("2048", 275, 98); //2048
 
         g.setColor(Color.red);
-        g.fillRoundRect(100, 50, 150, 100, 25, 25);
+        g.fillRoundRect(100, 70, 150, 80, 25, 25);
         g.setColor(corFundo);
-        g.fillRoundRect(120, 100, 110, 40, 25, 25);
+        g.fillRoundRect(120, 105, 110, 40, 25, 25);
 
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 22)); //PONTUACAO
-        g.drawString("PONTUAÇÃO", 105, 90); //PONTUACAO
+        g.drawString("PONTUAÇÃO", 105, 95); //PONTUACAO
+        
+        g.setColor(Color.red);
+        g.fillRoundRect(415, 80, 70, 70, 25, 25);
+        
+         g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 22)); //NOVO JOGO
+        g.drawString("NOVO", 418, 110); //PONTUACAO
+        g.drawString("JOGO", 418, 135); //PONTUACAO
 
         valorPontuacao = String.valueOf(pontuacao);
         g.setFont(new Font("Arial", Font.BOLD, 30)); //PONTUACAO
 
         if (pontuacao < 10) {
-            g.drawString(valorPontuacao, 169, 132); //PONTUACAO
+            g.drawString(valorPontuacao, 169, 136); //PONTUACAO
         } else {
             if (pontuacao < 100) {
-                g.drawString(valorPontuacao, 160, 132); //PONTUACAO  
+                g.drawString(valorPontuacao, 160, 136); //PONTUACAO  
             } else {
                 if (pontuacao < 1000) {
-                    g.drawString(valorPontuacao, 151, 132); //PONTUACAO
+                    g.drawString(valorPontuacao, 151, 136); //PONTUACAO
                 } else {
                     if (pontuacao < 100000) {
-                        g.drawString(valorPontuacao, 142, 132); //PONTUACAO
+                        g.drawString(valorPontuacao, 142, 136); //PONTUACAO
                     } else {
-                        g.drawString(valorPontuacao, 133, 132); //PONTUACAO
+                        g.drawString(valorPontuacao, 133, 136); //PONTUACAO
                     }
                 }
             }
@@ -190,6 +193,10 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                 }
             }
         }
+        
+     /*   g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 70)); //PONTUACAO
+        g.drawString("MURILO ARAUJO", 100, 300); //PONTUACAO */
     }
 
     public void movimentar() {
@@ -227,7 +234,7 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         super.paintComponents(gg);
         Graphics2D g = (Graphics2D) gg;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        teste(g);
+        telaDoJogo(g);
     }
 
     @Override
@@ -407,15 +414,7 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
             }
         }
     }*/
-    /**
-     * @return the acao
-     */
-    /**
-     * @return the matrizDoJogo
-     */
-    /**
-     * @return the pontuacao
-     */
+ 
     public static int getPontuacao() {
         return pontuacao;
     }
