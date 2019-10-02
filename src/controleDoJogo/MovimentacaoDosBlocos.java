@@ -1,5 +1,6 @@
 package controleDoJogo;
 
+import java.util.InputMismatchException;
 import java.util.Random;
 
 /**
@@ -12,7 +13,8 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
      * @param args the command line arguments
      */
     static Random aleatorio = new Random();
-    static boolean flagMover = false;
+    static boolean flagMover = false, gerouAleatorio = false;
+    static int[][] matrizTeste = new int[4][4];
 
     public MovimentacaoDosBlocos(int inicial) {
         int linha0a3 = 0, coluna0a3 = 0;
@@ -96,10 +98,12 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             cont = 1;
             flagSoma = 0;
         }
+        gerouAleatorio = false;
+        
         if (flagMover == true) {
             gerarAleatorio();
+            gerouAleatorio = true;
         }
-        flagMover = false;
     }
 
     public static void direita(int[][] matriz) {
@@ -135,10 +139,12 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             cont = 2;
             flagSoma = 3;
         }
+        gerouAleatorio = false;
+        
         if (flagMover == true) {
             gerarAleatorio();
+            gerouAleatorio = true;
         }
-        flagMover = false;
     }
 
     public static void cima(int[][] matriz) {
@@ -173,11 +179,12 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             cont = 1;
             flagSoma = 0;
         }
-
+        gerouAleatorio = false;
+        
         if (flagMover == true) {
             gerarAleatorio();
+            gerouAleatorio = true;
         }
-        flagMover = false;
     }
 
     public static void baixo(int[][] matriz) {
@@ -213,53 +220,35 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             cont = 2;
             flagSoma = 3;
         }
+        gerouAleatorio = false;
+        
         if (flagMover == true) {
             gerarAleatorio();
+            gerouAleatorio = true;
         }
-        flagMover = false;
     }
 
     public static boolean verificarSePerdeu() {
-        boolean flagPerdeu = false;
-        int[][] matrizTeste = new int[4][4];
+        boolean flagPerder = false;
+        int aux=0;
 
+     //    try{
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (matrizDoJogo[i][j] == 0) {
-                    return flagPerdeu;
+            for (int j = 0; j < 3; j++) {
+                if (matrizDoJogo[i][j] == matrizDoJogo[i][j+1] || matrizDoJogo[i][j] == 0 || matrizDoJogo[i][j+1]==0) {
+                    return flagPerder;
                 }
-                matrizTeste[i][j] = matrizDoJogo[i][j];
             }
         }
-
-        esquerda(matrizTeste);
-
-        if (flagMover == false) {
-            direita(matrizTeste);
-        } else {
-            flagPerdeu = false;
-            return flagPerdeu;
+        
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (matrizDoJogo[j][i] == matrizDoJogo[j+1][i] || matrizDoJogo[i][j] == 0 || matrizDoJogo[i][j+1]==0) {
+                    return flagPerder;
+                }
+            }
         }
-
-        if (flagMover == false) {
-            cima(matrizTeste);
-        } else {
-            flagPerdeu = false;
-            return flagPerdeu;
-        }
-
-        if (flagMover == false) {
-            baixo(matrizTeste);
-        } else {
-            flagPerdeu = false;
-            return flagPerdeu;
-        }
-
-        if (flagMover == false) {
-            flagPerdeu = true;
-            return flagPerdeu;
-        }
-        flagPerdeu = false;
-        return flagPerdeu;
-    }
+        flagPerder=true;
+        return flagPerder;
+   }
 }

@@ -1,4 +1,10 @@
 package controleDoJogo;
+
+import static controleDoJogo.MovimentacaoDosBlocos.baixo;
+import static controleDoJogo.MovimentacaoDosBlocos.cima;
+import static controleDoJogo.MovimentacaoDosBlocos.direita;
+import static controleDoJogo.MovimentacaoDosBlocos.esquerda;
+import static controleDoJogo.MovimentacaoDosBlocos.flagMover;
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
@@ -9,12 +15,14 @@ import javax.swing.*;
  */
 public class TelaGraficaEDeControle extends JPanel implements MouseListener {
 
+    protected static int[][] matrizTeste = new int[4][4];
     protected static int[][] matrizDoJogo = new int[4][4];
     protected static int pontuacao = 0;
-    boolean inicio = true, flagPerdeu=false;
+    boolean inicio = true, flagPerdeu = false;
     int k = 0, x = 97, y = 167, direcao = 0;
     private Integer clickX, clickY, soltarX, soltarY;
-    private Color corFundo, corLinhas, corBloco2, corBloco4, corBloco8, corBloco16, corBloco32, corBloco64, corBloco128, corBloco256, corBloco512, corBloco1024, corBloco2048;
+    private final Color corFundo, corLinhas, corBloco2, corBloco4, corBloco8, corBloco16, corBloco32, corBloco64, corBloco128, corBloco256, corBloco512, corBloco1024, corBloco2048;
+    private String valorPontuacao;
 
     public TelaGraficaEDeControle() {
         corFundo = new Color(102, 178, 255);
@@ -44,8 +52,38 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         g.setColor(Color.red);
         g.fillRoundRect(265, 14, 135, 135, 25, 25);
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 50)); //2
-        g.drawString("2048", 275, 98); //2
+        g.setFont(new Font("Arial", Font.BOLD, 50)); //2048
+        g.drawString("2048", 275, 98); //2048
+
+        g.setColor(Color.red);
+        g.fillRoundRect(100, 50, 150, 100, 25, 25);
+        g.setColor(corFundo);
+        g.fillRoundRect(120, 100, 110, 40, 25, 25);
+
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 22)); //PONTUACAO
+        g.drawString("PONTUAÇÃO", 105, 90); //PONTUACAO
+
+        valorPontuacao = String.valueOf(pontuacao);
+        g.setFont(new Font("Arial", Font.BOLD, 30)); //PONTUACAO
+
+        if (pontuacao < 10) {
+            g.drawString(valorPontuacao, 169, 132); //PONTUACAO
+        } else {
+            if (pontuacao < 100) {
+                g.drawString(valorPontuacao, 160, 132); //PONTUACAO  
+            } else {
+                if (pontuacao < 1000) {
+                    g.drawString(valorPontuacao, 151, 132); //PONTUACAO
+                } else {
+                    if (pontuacao < 100000) {
+                        g.drawString(valorPontuacao, 142, 132); //PONTUACAO
+                    } else {
+                        g.drawString(valorPontuacao, 133, 132); //PONTUACAO
+                    }
+                }
+            }
+        }
 
         g.setColor(corLinhas);
         g.fillRoundRect(100, 160, 460, 475, 25, 25);
@@ -108,9 +146,40 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                                                 g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                 g.setColor(Color.WHITE);
                                                 g.setFont(new Font("Arial", Font.BOLD, 40)); //128
-                                                g.drawString("128", 140 + j * 110, 240 + i * 115); //128
+                                                g.drawString("128", 130 + j * 110, 240 + i * 115); //128
+                                            } else {
+                                                if (matrizDoJogo[i][j] == 256) {
+                                                    g.setColor(corBloco256);
+                                                    g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
+                                                    g.setColor(Color.WHITE);
+                                                    g.setFont(new Font("Arial", Font.BOLD, 40)); //128
+                                                    g.drawString("256", 130 + j * 110, 240 + i * 115); //128
+                                                } else {
+                                                    if (matrizDoJogo[i][j] == 512) {
+                                                        g.setColor(corBloco512);
+                                                        g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
+                                                        g.setColor(Color.WHITE);
+                                                        g.setFont(new Font("Arial", Font.BOLD, 40)); //128
+                                                        g.drawString("512", 130 + j * 110, 240 + i * 115); //128
+                                                    } else {
+                                                        if (matrizDoJogo[i][j] == 1024) {
+                                                            g.setColor(corBloco1024);
+                                                            g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
+                                                            g.setColor(Color.WHITE);
+                                                            g.setFont(new Font("Arial", Font.BOLD, 40)); //128
+                                                            g.drawString("1024", 120 + j * 110, 240 + i * 115); //128
+                                                        } else {
+                                                            if (matrizDoJogo[i][j] == 2048) {
+                                                                g.setColor(corBloco2048);
+                                                                g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
+                                                                g.setColor(Color.WHITE);
+                                                                g.setFont(new Font("Arial", Font.BOLD, 40)); //128
+                                                                g.drawString("2048", 120 + j * 110, 240 + i * 115); //128
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
-
                                         }
                                     }
                                 }
@@ -119,10 +188,6 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                         }
                     }
                 }
-
-                //g.setFont(new Font("Arial", Font.BOLD, 40));  //2048
-                //g.drawString("2048", 121 + j*110, 240 + i*115); //2048
-                // }
             }
         }
     }
@@ -148,10 +213,11 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                     MovimentacaoDosBlocos.baixo(matrizDoJogo);
                 }
                 repaint();
-             /*   flagPerdeu = MovimentacaoDosBlocos.verificarSePerdeu();
-                if(flagPerdeu==true){
-                    System.out.println("Perdeu");
-                } */
+                flagPerdeu = MovimentacaoDosBlocos.verificarSePerdeu();
+                if (flagPerdeu == true) {
+                    System.out.println("Perdeuuuuuuuuuuuuu");
+                }
+                System.out.println("Pontuacaoo: " + getPontuacao());
             }
         });
     }
@@ -191,8 +257,8 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
             soltarY = e.getY();
             deltaX = (soltarX - clickX);
             deltaY = (soltarY - clickY);
-
             //System.out.println("click x: " + clickX + " clickY: " + clickY + "\nsoltarX: " + soltarX + " soltarY: " + soltarY);
+
             if (deltaX < 0 && deltaY < 0) {
                 deltaX = (deltaX * (-1));
                 deltaY = (deltaY * (-1));
@@ -243,6 +309,13 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         } catch (java.lang.NullPointerException e1) {
         }
         repaint();
+        if(MovimentacaoDosBlocos.gerouAleatorio==false){
+        flagPerdeu = MovimentacaoDosBlocos.verificarSePerdeu();
+        }
+        if (flagPerdeu == true) {
+            System.out.println("\nPerdeuuuuuuuuuuuuu");
+        }
+        System.out.println("\nPontuacaoo: " + getPontuacao());
     }
 
     @Override
@@ -282,55 +355,58 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
     }
 
     /*
-
     public class Movimento1 extends Thread {
 
-        
-        /*
         @Override
         public void run() {
             while (true) {
-                //    
                 try {
                     sleep(10);
                 } catch (InterruptedException erro) {
                 }
-                if (isAcao() == true) {
-                    //OrganizandoPaineisELabels paineisELabels = new OrganizandoPaineisELabels();
-                    //paineisELabels.setBounds(0, 0, 660, 660);
+                boolean flagVer = false;
 
-                    //  Integer k = 0, x = 97, y = 167;
-                    // MovimentacaoDosBlocos.gerarAleatorio(matrizDoJogo);
-                    //matrizDoJogo[0][0] = 0;
-                    //OrganizandoPaineisELabels.pPos[0].setVisible(false);
-                    //OrganizandoPaineisELabels.setP0x(97);
-                    //MovimentacaoDosBlocos.imprimirMatriz(matrizDoJogo);
-                    //for (int i = 0; i < 4; i++) {
-                    //  for (int j = 0; j < 4; j++) {
-                    //if(matrizDoJogo[i][j]==16){
-
-                    /*          //System.out.println(matrizDoJogo[0][0]);
-                            if (matrizDoJogo[0][0] == 0) {
-                                OrganizandoPaineisELabels.getpPos()[k].setBounds(getX(), getY(), 106, 106);
-                                OrganizandoPaineisELabels.getpPos()[k].setVisible(true);
-                                //add(OrganizandoPaineisELabels.getpPos()[k]);
-                                //k = k + 1;
-                                x += 120;
-                            } 
-                            if (x == 577) {
-                                x = 97;
-                                y += 120;
-                            }
-                        //}
-                    //} 
-                    //add(OrganizandoPaineisELabels.getpPos()[k]);
-                    //add(paineisELabels);
-                    // MovimentacaoDosBlocos.imprimirMatriz(matrizDoJogo);
+                for (int i = 0; i < 4 && flagVer == false; i++) {
+                    for (int j = 0; j < 4 && flagVer == false; j++) {
+                        if (matrizDoJogo[i][j] == 0) {
+                            flagPerdeu = false;
+                            flagVer = true;
+                        }
+                        matrizTeste[i][j] = matrizDoJogo[i][j];
+                    }
                 }
-                setAcao(false);
+
+                if (flagVer != true) {
+                    esquerda(matrizTeste);
+
+                    if (flagMover == false) {
+                        direita(matrizTeste);
+                    } else {
+                        flagPerdeu = false;
+                        flagVer = true;
+                    }
+                }
+
+                if (flagMover == false && flagVer != true) {
+                    cima(matrizTeste);
+                } else {
+                    flagPerdeu = false;
+                    flagVer = true;
+                }
+
+                if (flagMover == false && flagVer != true) {
+                    baixo(matrizTeste);
+                } else {
+                    flagPerdeu = false;
+                    flagVer = true;
+                }
+
+                if (flagMover == false && flagVer != true) {
+                    flagPerdeu = true;
+                }
             }
         }
-    } */
+    }*/
     /**
      * @return the acao
      */
@@ -364,5 +440,4 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
     public static void setMatrizDoJogo(int[][] aMatrizDoJogo) {
         matrizDoJogo = aMatrizDoJogo;
     }
-
 }
