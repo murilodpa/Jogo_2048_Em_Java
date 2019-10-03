@@ -1,6 +1,5 @@
 package controleDoJogo;
 
-import java.util.InputMismatchException;
 import java.util.Random;
 
 /**
@@ -12,9 +11,12 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
     /**
      * @param args the command line arguments
      */
-    static Random aleatorio = new Random();
-    static boolean flagMover = false, gerouAleatorio = false;
-    static int[][] matrizTeste = new int[4][4];
+    private static Random aleatorio = new Random();
+    public static boolean flagMover = false, gerouAleatorio = false;
+    static int[][] matrizRetornar = new int[4][4];
+    static int[] linhaChoque = new int [12];
+    static int[] colunaChoque = new int [12];
+    int cont1=0, cont2=0;
 
     public MovimentacaoDosBlocos(int inicial) {
         int linha0a3 = 0, coluna0a3 = 0;
@@ -67,15 +69,21 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
     }
 
     public static void esquerda(int[][] matriz) {
-        int flagSoma = 0, aux = 0, cont = 1;
+        int flagSoma = 0, aux = 0, cont = 1, cont1=0, cont2=0;;
         flagMover = false;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                matrizRetornar[i][j] = matrizDoJogo[i][j];
+            }
+        }
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
                 aux = cont;
 
                 while (aux > flagSoma) {
-                    if (matriz[i][aux - 1] == 0 && matriz[i][aux] !=0) {
+                    if (matriz[i][aux - 1] == 0 && matriz[i][aux] != 0) {
                         matriz[i][aux - 1] = matriz[i][aux];
                         matriz[i][aux] = 0;
                         flagMover = true;
@@ -89,6 +97,8 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
                     } else {
                         if (matriz[i][aux - 1] != 0 && matriz[i][aux] != 0) {
                             flagSoma += 1;
+                            linhaChoque[cont1]=i;
+                            colunaChoque[cont2]=(aux-1);
                         }
                     }
                     aux -= 1;
@@ -99,16 +109,23 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             flagSoma = 0;
         }
         gerouAleatorio = false;
-        
+
         if (flagMover == true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
+        flagSePodeRetornar=true;
     }
 
     public static void direita(int[][] matriz) {
         int flagSoma = 3, aux = 0, cont = 2;
         flagMover = false;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                matrizRetornar[i][j] = matrizDoJogo[i][j];
+            }
+        }
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
@@ -140,16 +157,23 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             flagSoma = 3;
         }
         gerouAleatorio = false;
-        
+
         if (flagMover == true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
+        flagSePodeRetornar=true;
     }
 
     public static void cima(int[][] matriz) {
         int flagSoma = 0, aux = 0, cont = 1;
         flagMover = false;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                matrizRetornar[i][j] = matrizDoJogo[i][j];
+            }
+        }
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
@@ -180,16 +204,23 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             flagSoma = 0;
         }
         gerouAleatorio = false;
-        
+
         if (flagMover == true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
+        flagSePodeRetornar=true;
     }
 
     public static void baixo(int[][] matriz) {
         int flagSoma = 3, aux = 0, cont = 2;
         flagMover = false;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                matrizRetornar[i][j] = matrizDoJogo[i][j];
+            }
+        }
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
@@ -221,34 +252,35 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
             flagSoma = 3;
         }
         gerouAleatorio = false;
-        
+
         if (flagMover == true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
+        flagSePodeRetornar=true;
     }
 
     public static boolean verificarSePerdeu() {
         boolean flagPerder = false;
-        int aux=0;
+        int aux = 0;
 
-     //    try{
+        //    try{
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
-                if (matrizDoJogo[i][j] == matrizDoJogo[i][j+1] || matrizDoJogo[i][j] == 0 || matrizDoJogo[i][j+1]==0) {
+                if (matrizDoJogo[i][j] == matrizDoJogo[i][j + 1] || matrizDoJogo[i][j] == 0 || matrizDoJogo[i][j + 1] == 0) {
                     return flagPerder;
                 }
             }
         }
-        
+
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
-                if (matrizDoJogo[j][i] == matrizDoJogo[j+1][i] || matrizDoJogo[i][j] == 0 || matrizDoJogo[i][j+1]==0) {
+                if (matrizDoJogo[j][i] == matrizDoJogo[j + 1][i]) {
                     return flagPerder;
                 }
             }
         }
-        flagPerder=true;
+        flagPerder = true;
         return flagPerder;
-   }
+    }
 }
