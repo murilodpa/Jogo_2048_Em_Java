@@ -12,7 +12,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author Murilo Araujo
  */
-public class Jogo2048 {
+public abstract class Jogo2048 {
 
     static JFrame telaDoJogo = new JFrame();
     static JFrame telaInicial = new JFrame();

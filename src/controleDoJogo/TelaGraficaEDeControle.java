@@ -4,6 +4,7 @@ import static controleDoJogo.MovimentacaoDosBlocos.colunaChoque;
 import static controleDoJogo.MovimentacaoDosBlocos.colunaSoma;
 import static controleDoJogo.MovimentacaoDosBlocos.linhaChoque;
 import static controleDoJogo.MovimentacaoDosBlocos.linhaSoma;
+import static controleDoJogo.MovimentacaoDosBlocos.zerarMatriz;
 import java.awt.event.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -37,9 +38,8 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
     private BufferedImage[][] imagemBoloco1024 = new BufferedImage[4][4];
     private BufferedImage[][] imagemBoloco2048 = new BufferedImage[4][4];
     private BufferedImage imagemRetornar;
-            
 
-    static boolean inicio = true, flagPerdeu = false, flagReiniciar = false, flagRetornar = false, flagSePodeRetornar = false;
+    static boolean inicio = true, flagPerdeu = false, flagReiniciar = false, flagRetornar = false, flagSePodeRetornar = false, flageasterEgg = false;
     int k = 0, x = 97, y = 167, direcao = 0;
     private Integer clickX, clickY, soltarX, soltarY;
     private Color corFundo;
@@ -110,13 +110,13 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-                try {
+
+        try {
             imagemRetornar = ImageIO.read(getClass().getResourceAsStream("Retornar.jpg"));
         } catch (IOException ex) {
             Logger.getLogger(TelaGraficaEDeControle.class.getName()).log(Level.SEVERE, null, ex);
         }
-                
+
         linhaChoque[k] = -1;
         colunaChoque[k] = -1;
         linhaSoma[k] = -1;
@@ -127,20 +127,26 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         Stroke oldStroke = g.getStroke();
         g.setStroke(new BasicStroke(3));
 
+        if (flageasterEgg == true) {
+           zerarMatriz();
+ MovimentacaoDosBlocos.gerarAleatorio(1024, 1024);
+ pontuacao=0;
+        }
+
         g.setColor(Color.red); //Escolhendo Cor Vermelha 
         g.fillRoundRect(265, 14, 135, 135, 25, 25); //Desenhar o LOGO
         g.setColor(Color.BLACK); //Escolhendo Cor Preta 
         g.drawRoundRect(265, 14, 135, 135, 25, 25); //Desenhar a borda do LOGO
         g.setFont(new Font("Arial", Font.BOLD, 50)); //Escrever 2048
         g.drawString("2048", 275, 98); //Escrever 2048
-        
+
         g.setColor(Color.red);
         g.fillRoundRect(100, 70, 153, 80, 25, 25);
         g.setColor(Color.BLACK);
         g.drawRoundRect(100, 70, 153, 80, 25, 25);
         g.setColor(corFundo);
         g.fillRoundRect(120, 105, 113, 40, 25, 25);
-        
+
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 22)); //PONTUACAO
         g.drawString("PONTUAÇÃO", 106, 95); //PONTUACAO
@@ -158,30 +164,32 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         //g.fillRoundRect(494, 80, 70, 70, 25, 25);
         g.setColor(Color.BLACK);
         g.drawRoundRect(494, 80, 70, 70, 1, 1);
-        
+
         g.setFont(new Font("Arial", Font.BOLD, 22)); //NOVO JOGO
 
-        if (flagReiniciar == true) {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    matrizDoJogo[i][j] = 0;
-                    inicio = true;
-                    flagReiniciar = false;
-                    pontuacao = 0;
+        //if (flageasterEgg == false) {
+            if (flagReiniciar == true) {
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        matrizDoJogo[i][j] = 0;
+                        inicio = true;
+                        flagReiniciar = false;
+                        pontuacao = 0;
+                    }
                 }
             }
-        }
 
-        if (flagRetornar == true && flagSePodeRetornar == true) {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    matrizDoJogo[i][j] = MovimentacaoDosBlocos.matrizRetornar[i][j];
-                    flagRetornar = false;
-                    flagSePodeRetornar = false;
-                    pontuacao = pontuacaoAnterior;
+            if (flagRetornar == true && flagSePodeRetornar == true) {
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        matrizDoJogo[i][j] = MovimentacaoDosBlocos.matrizRetornar[i][j];
+                        flagRetornar = false;
+                        flagSePodeRetornar = false;
+                        pontuacao = pontuacaoAnterior;
+                    }
                 }
             }
-        }
+        //}
 
         valorPontuacao = String.valueOf(pontuacao);
         g.setFont(new Font("Arial", Font.BOLD, 30)); //PONTUACAO
@@ -212,118 +220,119 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         g.setColor(corLinhas);
         g.fillRoundRect(100, 160, 460, 475, 25, 25);
 
-         g.setColor(Color.BLACK);  
+        g.setColor(Color.BLACK);
         g.setStroke(new BasicStroke(3));
 
-        if (inicio == true) {
+        if (inicio == true && flageasterEgg == false) {
             MovimentacaoDosBlocos.gerarAleatorio(2);
             inicio = false;
         }
 
         MovimentacaoDosBlocos.imprimirMatriz();
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (matrizDoJogo[i][j] == 0) {
-                    g.setColor(corFundo);
-                    g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
-                } else {
-                    if (matrizDoJogo[i][j] == 2) {
-                        g.setColor(corBloco2);
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (matrizDoJogo[i][j] == 0) {
+                        g.setColor(corFundo);
                         g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
-                        g.setColor(Color.BLACK);
-                        g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
-                        g.setFont(new Font("Arial", Font.BOLD, 40)); //2
-                        g.drawString("2", 153 + j * 111, 240 + i * 116); //2
                     } else {
-                        if (matrizDoJogo[i][j] == 4) {
-                            g.setColor(corBloco4);
+                        if (matrizDoJogo[i][j] == 2) {
+                            g.setColor(corBloco2);
                             g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                             g.setColor(Color.BLACK);
                             g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
-                            g.setFont(new Font("Arial", Font.BOLD, 40)); //4
-                            g.drawString("4", 153 + j * 111, 240 + i * 116); //4
+                            g.setFont(new Font("Arial", Font.BOLD, 40)); //2
+                            g.drawString("2", 153 + j * 111, 240 + i * 116); //2
                         } else {
-                            if (matrizDoJogo[i][j] == 8) {
-                                g.setColor(corBloco8);
+                            if (matrizDoJogo[i][j] == 4) {
+                                g.setColor(corBloco4);
                                 g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                 g.setColor(Color.BLACK);
                                 g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
-                                g.setColor(Color.WHITE);
-                                g.setFont(new Font("Arial", Font.BOLD, 40)); //8
-                                g.drawString("8", 153 + j * 111, 240 + i * 116); //8
+                                g.setFont(new Font("Arial", Font.BOLD, 40)); //4
+                                g.drawString("4", 153 + j * 111, 240 + i * 116); //4
                             } else {
-                                if (matrizDoJogo[i][j] == 16) {
-                                    g.setColor(corBloco16);
+                                if (matrizDoJogo[i][j] == 8) {
+                                    g.setColor(corBloco8);
                                     g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                     g.setColor(Color.BLACK);
                                     g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                     g.setColor(Color.WHITE);
-                                    g.setFont(new Font("Arial", Font.BOLD, 40)); //16
-                                    g.drawString("16", 140 + j * 111, 240 + i * 116); //16
+                                    g.setFont(new Font("Arial", Font.BOLD, 40)); //8
+                                    g.drawString("8", 153 + j * 111, 240 + i * 116); //8
                                 } else {
-                                    if (matrizDoJogo[i][j] == 32) {
-                                        g.setColor(corBloco32);
+                                    if (matrizDoJogo[i][j] == 16) {
+                                        g.setColor(corBloco16);
                                         g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                         g.setColor(Color.BLACK);
                                         g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                         g.setColor(Color.WHITE);
-                                        g.setFont(new Font("Arial", Font.BOLD, 40)); //32
-                                        g.drawString("32", 140 + j * 110, 240 + i * 115); //32                                  
+                                        g.setFont(new Font("Arial", Font.BOLD, 40)); //16
+                                        g.drawString("16", 140 + j * 111, 240 + i * 116); //16
                                     } else {
-                                        if (matrizDoJogo[i][j] == 64) {
-                                            g.setColor(corBloco64);
+                                        if (matrizDoJogo[i][j] == 32) {
+                                            g.setColor(corBloco32);
                                             g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                             g.setColor(Color.BLACK);
                                             g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                             g.setColor(Color.WHITE);
-                                            g.setFont(new Font("Arial", Font.BOLD, 40)); //64
-                                            g.drawString("64", 140 + j * 110, 240 + i * 115); //64
+                                            g.setFont(new Font("Arial", Font.BOLD, 40)); //32
+                                            g.drawString("32", 140 + j * 110, 240 + i * 115); //32                                  
                                         } else {
-                                            if (matrizDoJogo[i][j] == 128) {
-                                                g.setColor(corBloco128);
+                                            if (matrizDoJogo[i][j] == 64) {
+                                                g.setColor(corBloco64);
                                                 g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                 g.setColor(Color.BLACK);
                                                 g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                 g.setColor(Color.WHITE);
-                                                g.setFont(new Font("Arial", Font.BOLD, 40)); //128
-                                                g.drawString("128", 130 + j * 110, 240 + i * 115); //128
+                                                g.setFont(new Font("Arial", Font.BOLD, 40)); //64
+                                                g.drawString("64", 140 + j * 110, 240 + i * 115); //64
                                             } else {
-                                                if (matrizDoJogo[i][j] == 256) {
-                                                    g.setColor(corBloco256);
+                                                if (matrizDoJogo[i][j] == 128) {
+                                                    g.setColor(corBloco128);
                                                     g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                     g.setColor(Color.BLACK);
                                                     g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                     g.setColor(Color.WHITE);
                                                     g.setFont(new Font("Arial", Font.BOLD, 40)); //128
-                                                    g.drawString("256", 130 + j * 110, 240 + i * 115); //128
+                                                    g.drawString("128", 130 + j * 110, 240 + i * 115); //128
                                                 } else {
-                                                    if (matrizDoJogo[i][j] == 512) {
-                                                        g.setColor(corBloco512);
+                                                    if (matrizDoJogo[i][j] == 256) {
+                                                        g.setColor(corBloco256);
                                                         g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                         g.setColor(Color.BLACK);
                                                         g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                         g.setColor(Color.WHITE);
                                                         g.setFont(new Font("Arial", Font.BOLD, 40)); //128
-                                                        g.drawString("512", 130 + j * 110, 240 + i * 115); //128
+                                                        g.drawString("256", 130 + j * 110, 240 + i * 115); //128
                                                     } else {
-                                                        if (matrizDoJogo[i][j] == 1024) {
-                                                            g.setColor(corBloco1024);
+                                                        if (matrizDoJogo[i][j] == 512) {
+                                                            g.setColor(corBloco512);
                                                             g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                             g.setColor(Color.BLACK);
                                                             g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                             g.setColor(Color.WHITE);
                                                             g.setFont(new Font("Arial", Font.BOLD, 40)); //128
-                                                            g.drawString("1024", 120 + j * 110, 240 + i * 115); //128
+                                                            g.drawString("512", 130 + j * 110, 240 + i * 115); //128
                                                         } else {
-                                                            if (matrizDoJogo[i][j] == 2048) {
-                                                                g.setColor(corBloco2048);
+                                                            if (matrizDoJogo[i][j] == 1024) {
+                                                                g.setColor(corBloco1024);
                                                                 g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                                 g.setColor(Color.BLACK);
                                                                 g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
                                                                 g.setColor(Color.WHITE);
                                                                 g.setFont(new Font("Arial", Font.BOLD, 40)); //128
-                                                                g.drawString("2048", 120 + j * 110, 240 + i * 115); //128
+                                                                g.drawString("1024", 120 + j * 110, 240 + i * 115); //128
+                                                            } else {
+                                                                if (matrizDoJogo[i][j] == 2048) {
+                                                                    g.setColor(corBloco2048);
+                                                                    g.fillRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
+                                                                    g.setColor(Color.BLACK);
+                                                                    g.drawRoundRect(115 + j * 110, 175 + i * 115, 100, 100, 25, 25);
+                                                                    g.setColor(Color.WHITE);
+                                                                    g.setFont(new Font("Arial", Font.BOLD, 40)); //128
+                                                                    g.drawString("2048", 120 + j * 110, 240 + i * 115); //128
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -332,13 +341,12 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
             }
-        }
         
         /*   int x=0;
         if(x==0){
@@ -349,7 +357,6 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         try{tracker.waitForAll();}catch(InterruptedException e){System.exit(1);}
         g.drawImage(image,100,100,image.getWidth()*2,image.getHeight()*2, null);
         }  */
-
         int l = 0;
         while (linhaChoque[l] != -1 && flagCimaOuBaixo == 1) {
             for (int i = 0; i < 4 && linhaChoque[l] >= i; i++) { //for para horizontais
@@ -485,26 +492,31 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
             @Override
             public void keyPressed(KeyEvent e) {
 
-                if (e.getKeyCode() == 37 || e.getKeyCode() == 65) {
+                 if (e.getKeyCode() == 37 || e.getKeyCode() == 65 && flageasterEgg==true) {
+                    MovimentacaoDosBlocos.esquerda(matrizDoJogo);
+                    flagCimaOuBaixo = 1;
+                }
+                 
+                if (e.getKeyCode() == 37 || e.getKeyCode() == 65 && flageasterEgg!=true) {
                     MovimentacaoDosBlocos.esquerda(matrizDoJogo);
                     flagCimaOuBaixo = 1;
                 }
 
-                if (e.getKeyCode() == 38 || e.getKeyCode() == 87) {
+                if (e.getKeyCode() == 38 || e.getKeyCode() == 87 && flageasterEgg!=true) {
                     MovimentacaoDosBlocos.cima(matrizDoJogo);
                     flagCimaOuBaixo = 2;
                 }
 
-                if (e.getKeyCode() == 39 || e.getKeyCode() == 68) {
+                if (e.getKeyCode() == 39 || e.getKeyCode() == 68 && flageasterEgg!=true){
                     MovimentacaoDosBlocos.direita(matrizDoJogo);
                     flagCimaOuBaixo = 1;
                 }
 
-                if (e.getKeyCode() == 40 || e.getKeyCode() == 83) {
+                if (e.getKeyCode() == 40 || e.getKeyCode() == 83 && flageasterEgg!=true){
                     MovimentacaoDosBlocos.baixo(matrizDoJogo);
                     flagCimaOuBaixo = 2;
                 }
-                
+
                 repaint();
                 flagPerdeu = MovimentacaoDosBlocos.verificarSePerdeu();
                 if (flagPerdeu == true) {
@@ -545,7 +557,7 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
     @Override
     public void mouseReleased(MouseEvent e) {
         int deltaX = 0, deltaY = 0;
-
+if(flageasterEgg!=true){
         try {
             soltarX = e.getX();
             soltarY = e.getY();
@@ -554,74 +566,79 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
 
         if (clickX > 412 && clickX < 483 && clickY > 79 && clickY < 146) {
             flagReiniciar = true;
-        }   else {
-            if(clickX > 492 && clickX < 563 && clickY > 79 && clickY < 146){
-              flagRetornar = true;  
-            }
-            try {
-                deltaX = (soltarX - clickX);
-                deltaY = (soltarY - clickY);
-                //System.out.println("click x: " + clickX + " clickY: " + clickY + "\nsoltarX: " + soltarX + " soltarY: " + soltarY); 
-
-                if (deltaX < 0 && deltaY < 0) {
-                    deltaX = (deltaX * (-1));
-                    deltaY = (deltaY * (-1));
-                    if (deltaX > deltaY) {
-                        MovimentacaoDosBlocos.esquerda(matrizDoJogo);
-                        flagCimaOuBaixo = 1;
-                        deltaX = (deltaX * (-1));
-                        deltaY = (deltaY * (-1));
-                    } else {
-                        MovimentacaoDosBlocos.cima(matrizDoJogo);
-                        flagCimaOuBaixo = 2;
-                        deltaX = (deltaX * (-1));
-                        deltaY = (deltaY * (-1));
-                    }
+        } else {
+            if (clickX > 492 && clickX < 563 && clickY > 79 && clickY < 146) {
+                flagRetornar = true;
+            } else {
+                if (clickX > 268 && clickX < 401 && clickY > 15 && clickY < 145) {
+                    flageasterEgg = true;
                 } else {
-                    if (deltaX > 0 && deltaY < 0) {
-                        deltaY = (deltaY * (-1));
+                    try {
+                        deltaX = (soltarX - clickX);
+                        deltaY = (soltarY - clickY);
+                        //System.out.println("click x: " + clickX + " clickY: " + clickY + "\nsoltarX: " + soltarX + " soltarY: " + soltarY); 
 
-                        if (deltaX > deltaY) {
-                            MovimentacaoDosBlocos.direita(matrizDoJogo);
-                            flagCimaOuBaixo = 1;
+                        if (deltaX < 0 && deltaY < 0) {
+                            deltaX = (deltaX * (-1));
                             deltaY = (deltaY * (-1));
-                        } else {
-                            MovimentacaoDosBlocos.cima(matrizDoJogo);
-                            flagCimaOuBaixo = 2;
-                            deltaY = (deltaY * (-1));
-                        }
-                    } else {
-                        if (deltaX > 0 && deltaY > 0) {
-
                             if (deltaX > deltaY) {
-                                MovimentacaoDosBlocos.direita(matrizDoJogo);
+                                MovimentacaoDosBlocos.esquerda(matrizDoJogo);
                                 flagCimaOuBaixo = 1;
+                                deltaX = (deltaX * (-1));
+                                deltaY = (deltaY * (-1));
                             } else {
-                                MovimentacaoDosBlocos.baixo(matrizDoJogo);
+                                MovimentacaoDosBlocos.cima(matrizDoJogo);
                                 flagCimaOuBaixo = 2;
+                                deltaX = (deltaX * (-1));
+                                deltaY = (deltaY * (-1));
                             }
                         } else {
-                            if (deltaX < 0 && deltaY > 0) {
-                                deltaX = (deltaX * (-1));
+                            if (deltaX > 0 && deltaY < 0) {
+                                deltaY = (deltaY * (-1));
 
                                 if (deltaX > deltaY) {
-                                    MovimentacaoDosBlocos.esquerda(matrizDoJogo);
+                                    MovimentacaoDosBlocos.direita(matrizDoJogo);
                                     flagCimaOuBaixo = 1;
-                                    deltaX = (deltaX * (-1));
-
+                                    deltaY = (deltaY * (-1));
                                 } else {
-                                    MovimentacaoDosBlocos.baixo(matrizDoJogo);
+                                    MovimentacaoDosBlocos.cima(matrizDoJogo);
                                     flagCimaOuBaixo = 2;
-                                    deltaX = (deltaX * (-1));
+                                    deltaY = (deltaY * (-1));
+                                }
+                            } else {
+                                if (deltaX > 0 && deltaY > 0) {
+
+                                    if (deltaX > deltaY) {
+                                        MovimentacaoDosBlocos.direita(matrizDoJogo);
+                                        flagCimaOuBaixo = 1;
+                                    } else {
+                                        MovimentacaoDosBlocos.baixo(matrizDoJogo);
+                                        flagCimaOuBaixo = 2;
+                                    }
+                                } else {
+                                    if (deltaX < 0 && deltaY > 0) {
+                                        deltaX = (deltaX * (-1));
+
+                                        if (deltaX > deltaY) {
+                                            MovimentacaoDosBlocos.esquerda(matrizDoJogo);
+                                            flagCimaOuBaixo = 1;
+                                            deltaX = (deltaX * (-1));
+
+                                        } else {
+                                            MovimentacaoDosBlocos.baixo(matrizDoJogo);
+                                            flagCimaOuBaixo = 2;
+                                            deltaX = (deltaX * (-1));
+                                        }
+                                    }
                                 }
                             }
                         }
+                    } catch (java.lang.NullPointerException e1) {
                     }
                 }
-            } catch (java.lang.NullPointerException e1) {
             }
-        } 
-
+        }
+}
         repaint();
         if (MovimentacaoDosBlocos.gerouAleatorio == false) {
             flagPerdeu = MovimentacaoDosBlocos.verificarSePerdeu();

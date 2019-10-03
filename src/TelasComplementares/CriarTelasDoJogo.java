@@ -10,16 +10,18 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import jogo2048.Jogo2048;
 
-public class CriarTelasDoJogo {
+public class CriarTelasDoJogo extends Jogo2048 {
 
     JFrame telaDoJogo = new JFrame();
     JFrame telaInicial = new JFrame();
     JFrame telaFinal = new JFrame();
+    static boolean flagIniciar = false;
+    static boolean flagSair = false;
 
 //    ImageIcon iconRaio = new ImageIcon(getClass().getResource("RAIO.gif"));
- //   JLabel labelRaio = new JLabel(iconRaio);
-
+    //   JLabel labelRaio = new JLabel(iconRaio);
     public CriarTelasDoJogo() {
         SwingUtilities.invokeLater(() -> {
 
@@ -27,9 +29,18 @@ public class CriarTelasDoJogo {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException exception) {
                 JOptionPane.showMessageDialog(null, "Erro ao criar a frame! " + exception.getMessage());
-            }    
-            editarJanelaDoJogo();
-            // editarJanelaInicial();
+            }
+
+            //if(flagSair==false)
+            //editarJanelaInicial();
+            //if (flagSair == true) {
+              //  telaInicial.dispose();
+            //} else {
+              //  if (flagIniciar == true) {
+                    editarJanelaDoJogo();
+                //    telaInicial.dispose();
+               // }
+            //}
             //editarJanelaFinal(); 
         });
     }
@@ -45,21 +56,19 @@ public class CriarTelasDoJogo {
         telaInicial.setVisible(true);
     }
 
-     public void editarComponente(){
-       
-    } 
-     
+    public void editarComponente() {
+
+    }
+
     public void editarJanelaDoJogo() {
         telaDoJogo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         telaDoJogo.setTitle("JOGO 2048");
-        //labelRaio.setLocation(570, 570);
-        //labelRaio.setSize(400,400);
-        telaDoJogo.setResizable(true);
+        telaDoJogo.setResizable(false);
         telaDoJogo.add(new TelaGraficaEDeControle(), BorderLayout.CENTER);
         telaDoJogo.pack();
         telaDoJogo.setLocationRelativeTo(null);
         telaDoJogo.setBackground(new Color(102, 178, 255));
-        telaDoJogo.setVisible(true);    
+        telaDoJogo.setVisible(true);
     }
 
     public void editarJanelaFinal() {

@@ -57,6 +57,21 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         coluna0a3 = aleatorio.nextInt(4);
         matrizDoJogo[linha0a3][coluna0a3] = n;
     }
+    
+     public static void gerarAleatorio(int n, int m) {
+        int linha0a3 = 0, coluna0a3 = 0;
+        matrizDoJogo[linha0a3][coluna0a3] = n;
+        matrizDoJogo[linha0a3][coluna0a3+1] = m;
+     }
+    
+    
+      public static void zerarMatriz() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                matrizDoJogo[i][j]=0;
+            }
+        }
+    }
 
     public static void imprimirMatriz() {
         for (int i = 0; i < 4; i++) {
