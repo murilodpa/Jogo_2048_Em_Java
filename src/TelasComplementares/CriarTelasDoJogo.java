@@ -14,9 +14,9 @@ import jogo2048.Jogo2048;
 
 public class CriarTelasDoJogo extends Jogo2048 {
 
-    JFrame telaDoJogo = new JFrame();
-    JFrame telaInicial = new JFrame();
-    JFrame telaFinal = new JFrame();
+    public static JFrame telaDoJogo = new JFrame();
+    public static  JFrame telaInicial = new JFrame();
+    public static JFrame telaFinal = new JFrame();
     static boolean flagIniciar = false;
     static boolean flagSair = false;
 

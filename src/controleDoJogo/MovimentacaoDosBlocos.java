@@ -138,7 +138,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
         gerouAleatorio = false;
 
-        if (flagMover == true) {
+        if (flagMover == true && flagEasterEgg!=true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
@@ -202,7 +202,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
         gerouAleatorio = false;
 
-        if (flagMover == true) {
+        if (flagMover == true && flagEasterEgg!=true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
@@ -265,7 +265,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
         gerouAleatorio = false;
 
-        if (flagMover == true) {
+        if (flagMover == true && flagEasterEgg!=true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
@@ -329,7 +329,7 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
         gerouAleatorio = false;
 
-        if (flagMover == true) {
+        if (flagMover == true && flagEasterEgg!=true) {
             gerarAleatorio();
             gerouAleatorio = true;
         }
@@ -358,5 +358,18 @@ public class MovimentacaoDosBlocos extends TelaGraficaEDeControle {
         }
         flagPerder = true;
         return flagPerder;
+    }
+    
+    public static boolean verificarSeGanhou() {
+        boolean flagGanhou=false;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (matrizDoJogo[i][j] == 2048) {
+                    flagGanhou=true;
+                    return flagGanhou;
+                }
+            }
+        }
+        return flagGanhou;
     }
 }

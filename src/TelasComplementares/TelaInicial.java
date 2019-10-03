@@ -95,9 +95,7 @@ public class TelaInicial extends JPanel implements MouseListener{
         if (clickX > 210 && clickX < 455 && clickY > 362 && clickY < 431) {
             CriarTelasDoJogo.flagIniciar = true;
         } else{
-             if (clickX > 249 && clickX < 410 && clickY > 511 && clickY < 576) {
-            CriarTelasDoJogo.flagSair = true;
-             }
+            
            new CriarTelasDoJogo();
         }
         
