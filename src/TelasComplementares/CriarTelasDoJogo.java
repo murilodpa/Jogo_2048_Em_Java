@@ -27,14 +27,7 @@ public class CriarTelasDoJogo {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException exception) {
                 JOptionPane.showMessageDialog(null, "Erro ao criar a frame! " + exception.getMessage());
-            }
-/*
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    labelRaio[i][j] = new JLabel(iconRaio);
-                }
-            }
-  */      
+            }    
             editarJanelaDoJogo();
             // editarJanelaInicial();
             //editarJanelaFinal(); 
@@ -66,11 +59,8 @@ public class CriarTelasDoJogo {
         telaDoJogo.pack();
         telaDoJogo.setLocationRelativeTo(null);
         telaDoJogo.setBackground(new Color(102, 178, 255));
-        telaDoJogo.setVisible(true);
-         
+        telaDoJogo.setVisible(true);    
     }
-    
-   
 
     public void editarJanelaFinal() {
         telaFinal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

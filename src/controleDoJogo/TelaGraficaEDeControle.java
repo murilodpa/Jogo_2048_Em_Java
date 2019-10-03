@@ -1,9 +1,16 @@
 package controleDoJogo;
 
+import static controleDoJogo.MovimentacaoDosBlocos.colunaChoque;
+import static controleDoJogo.MovimentacaoDosBlocos.colunaSoma;
+import static controleDoJogo.MovimentacaoDosBlocos.linhaChoque;
+import static controleDoJogo.MovimentacaoDosBlocos.linhaSoma;
 import java.awt.event.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -16,18 +23,51 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
     /**
      *
      */
-    protected static int[][] matrizTeste = new int[4][4];
     protected static int[][] matrizDoJogo = new int[4][4];
     protected static int pontuacao = 0, pontuacaoAnterior = 0;
-    private BufferedImage[][] imageRaio = new BufferedImage[4][3];
+    private BufferedImage[][] imagemRaio = new BufferedImage[4][3];
+    private BufferedImage[][] imagemBoloco4 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco8 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco16 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco32 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco64 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco128 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco256 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco512 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco1024 = new BufferedImage[4][4];
+    private BufferedImage[][] imagemBoloco2048 = new BufferedImage[4][4];
+    private BufferedImage imagemRetornar;
+            
 
     static boolean inicio = true, flagPerdeu = false, flagReiniciar = false, flagRetornar = false, flagSePodeRetornar = false;
     int k = 0, x = 97, y = 167, direcao = 0;
     private Integer clickX, clickY, soltarX, soltarY;
-    private final Color corFundo, corLinhas, corBloco2, corBloco4, corBloco8, corBloco16, corBloco32, corBloco64, corBloco128, corBloco256, corBloco512, corBloco1024, corBloco2048;
+    private Color corFundo;
+    private Color corLinhas;
+    private Color corBloco2;
+    private Color corBloco4;
+    private Color corBloco8;
+    private Color corBloco16;
+    private Color corBloco32;
+    private Color corBloco64;
+    private Color corBloco128;
+    private Color corBloco256;
+    private Color corBloco512;
+    private Color corBloco1024;
+    private Color corBloco2048;
     private String valorPontuacao;
+    int flagCimaOuBaixo = 0;
 
     public TelaGraficaEDeControle() {
+        setPreferredSize(new Dimension(660, 660));
+        setFocusable(true);
+        instanciarComponentes();
+        new verificarChoqueOuSoma().start();
+        movimentar();
+        addMouseListener(this);
+    }
+
+    public void instanciarComponentes() {
         corFundo = new Color(102, 178, 255);
         corLinhas = new Color(0, 128, 255);
         corBloco2 = new Color(220, 220, 220);
@@ -42,21 +82,45 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         corBloco1024 = new Color(255, 255, 64);
         corBloco2048 = new Color(255, 255, 0);
 
-        setPreferredSize(new Dimension(660, 660));
-        setFocusable(true);
-        // new Movimento1().start();
-        movimentar();
-        addMouseListener(this);
-
         try {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 3; j++) {
-                    imageRaio[i][j] = ImageIO.read(getClass().getResourceAsStream("RAIO.gif"));
+                    imagemRaio[i][j] = ImageIO.read(getClass().getResourceAsStream("RAIO.gif"));
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    imagemBoloco4[i][j] = ImageIO.read(getClass().getResourceAsStream("estrelas_4.gif"));
+                    imagemBoloco8[i][j] = ImageIO.read(getClass().getResourceAsStream("brilhos_8.gif"));
+                    imagemBoloco16[i][j] = ImageIO.read(getClass().getResourceAsStream("baloes_16.gif"));
+                    imagemBoloco32[i][j] = ImageIO.read(getClass().getResourceAsStream("bobEsponja_32.gif"));
+                    imagemBoloco64[i][j] = ImageIO.read(getClass().getResourceAsStream("abacates_64.gif"));
+                    imagemBoloco128[i][j] = ImageIO.read(getClass().getResourceAsStream("tenor_128.gif"));
+                    imagemBoloco256[i][j] = ImageIO.read(getClass().getResourceAsStream("giphy_256.gif"));
+                    imagemBoloco512[i][j] = ImageIO.read(getClass().getResourceAsStream("tenor_512.gif"));
+                    imagemBoloco1024[i][j] = ImageIO.read(getClass().getResourceAsStream("tenor_1024.gif"));
+                    imagemBoloco2048[i][j] = ImageIO.read(getClass().getResourceAsStream("fogosDeArtificio_2048.gif"));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+                try {
+            imagemRetornar = ImageIO.read(getClass().getResourceAsStream("Retornar.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(TelaGraficaEDeControle.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                
+        linhaChoque[k] = -1;
+        colunaChoque[k] = -1;
+        linhaSoma[k] = -1;
+        colunaSoma[k] = -1;
     }
 
     public void telaDoJogo(Graphics2D g) {
@@ -69,14 +133,14 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         g.drawRoundRect(265, 14, 135, 135, 25, 25); //Desenhar a borda do LOGO
         g.setFont(new Font("Arial", Font.BOLD, 50)); //Escrever 2048
         g.drawString("2048", 275, 98); //Escrever 2048
-
+        
         g.setColor(Color.red);
         g.fillRoundRect(100, 70, 153, 80, 25, 25);
         g.setColor(Color.BLACK);
         g.drawRoundRect(100, 70, 153, 80, 25, 25);
         g.setColor(corFundo);
         g.fillRoundRect(120, 105, 113, 40, 25, 25);
-
+        
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 22)); //PONTUACAO
         g.drawString("PONTUAÇÃO", 106, 95); //PONTUACAO
@@ -90,9 +154,11 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         g.drawString("JOGO", 415, 135); //JOGO
 
         g.setColor(Color.red);
-        g.fillRoundRect(494, 80, 70, 70, 25, 25);
+        g.drawImage(imagemRetornar, 494, 80, 70, 70, this);
+        //g.fillRoundRect(494, 80, 70, 70, 25, 25);
         g.setColor(Color.BLACK);
-        g.drawRoundRect(494, 80, 70, 70, 25, 25);
+        g.drawRoundRect(494, 80, 70, 70, 1, 1);
+        
         g.setFont(new Font("Arial", Font.BOLD, 22)); //NOVO JOGO
 
         if (flagReiniciar == true) {
@@ -116,7 +182,7 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                 }
             }
         }
-        
+
         valorPontuacao = String.valueOf(pontuacao);
         g.setFont(new Font("Arial", Font.BOLD, 30)); //PONTUACAO
 
@@ -139,19 +205,21 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                 }
             }
         }
-        
+
         g.setStroke(new BasicStroke(7));
         g.setColor(Color.BLACK);
         g.drawRoundRect(100, 160, 460, 475, 25, 25);
         g.setColor(corLinhas);
         g.fillRoundRect(100, 160, 460, 475, 25, 25);
-        
+
+         g.setColor(Color.BLACK);  
         g.setStroke(new BasicStroke(3));
 
         if (inicio == true) {
             MovimentacaoDosBlocos.gerarAleatorio(2);
+            inicio = false;
         }
-        inicio = false;
+
         MovimentacaoDosBlocos.imprimirMatriz();
 
         for (int i = 0; i < 4; i++) {
@@ -271,11 +339,7 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                 }
             }
         }
-
-        /*   g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 70)); //PONTUACAO
-        g.drawString("MURILO ARAUJO", 100, 300); //PONTUACAO */
-        //add(labelRaio[0][0]);
+        
         /*   int x=0;
         if(x==0){
         Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -285,15 +349,133 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
         try{tracker.waitForAll();}catch(InterruptedException e){System.exit(1);}
         g.drawImage(image,100,100,image.getWidth()*2,image.getHeight()*2, null);
         }  */
-        for (int i = 0; i < 4; i++) { //for para horizontais
-            for (int j = 0; j < 3; j++) {
-                g.drawImage(imageRaio[i][j], 176 + j * 111, 178 + i * 116, 90, 90, null);
+
+        int l = 0;
+        while (linhaChoque[l] != -1 && flagCimaOuBaixo == 1) {
+            for (int i = 0; i < 4 && linhaChoque[l] >= i; i++) { //for para horizontais
+                for (int j = 0; j < 3; j++) {
+                    if (linhaChoque[l] == i && colunaChoque[l] == j) {
+                        g.drawImage(imagemRaio[i][j], 176 + j * 111, 178 + i * 116, 90, 90, this);
+                    }
+                }
             }
+            l += 1;
         }
 
-        for (int i = 0; i < 4; i++) { //for para verticais
-            for (int j = 0; j < 3; j++) {
-                g.drawImage(imageRaio[i][j], 121 + i * 111, 237 + j * 116, 90, 90, null);
+        l = 0;
+        while (linhaChoque[l] != -1 && flagCimaOuBaixo == 2) {
+            for (int i = 0; i < 4; i++) { //for para verticais
+                for (int j = 0; j < 3; j++) {
+                    if (linhaChoque[l] == i && colunaChoque[l] == j) {
+                        g.drawImage(imagemRaio[i][j], 121 + i * 111, 237 + j * 116, 90, 90, this);
+                    }
+                }
+            }
+            l += 1;
+        }
+
+        l = 0;
+        int i = 0, j = 0;
+        while (linhaSoma[l] != -1) {
+
+            if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 4) {
+                g.drawImage(imagemBoloco4[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                j += 1;
+                l += 1;
+                if (j == 4) {
+                    i += 1;
+                }
+                j = 0;
+            } else {
+                if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 8) {
+                    g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                    j += 1;
+                    l += 1;
+                    if (j == 4) {
+                        i += 1;
+                    }
+                    j = 0;
+                } else {
+                    if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 16) {
+                        g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                        j += 1;
+                        l += 1;
+                        if (j == 4) {
+                            i += 1;
+                        }
+                        j = 0;
+                    } else {
+                        if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 32) {
+                            g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                            j += 1;
+                            l += 1;
+                            if (j == 4) {
+                                i += 1;
+                            }
+                            j = 0;
+                        } else {
+                            if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 64) {
+                                g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                                j += 1;
+                                l += 1;
+                                if (j == 4) {
+                                    i += 1;
+                                }
+                                j = 0;
+                            } else {
+                                if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 128) {
+                                    g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                                    j += 1;
+                                    l += 1;
+                                    if (j == 4) {
+                                        i += 1;
+                                    }
+                                    j = 0;
+                                } else {
+                                    if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 256) {
+                                        g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                                        j += 1;
+                                        l += 1;
+                                        if (j == 4) {
+                                            i += 1;
+                                        }
+                                        j = 0;
+                                    } else {
+                                        if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 512) {
+                                            g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                                            j += 1;
+                                            l += 1;
+                                            if (j == 4) {
+                                                i += 1;
+                                            }
+                                            j = 0;
+                                        } else {
+                                            if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 1024) {
+                                                g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                                                j += 1;
+                                                l += 1;
+                                                if (j == 4) {
+                                                    i += 1;
+                                                }
+                                                j = 0;
+                                            } else {
+                                                if (matrizDoJogo[(linhaSoma[l])][(colunaSoma[l])] == 2048) {
+                                                    g.drawImage(imagemBoloco8[i][j], 115 + colunaSoma[l] * 110, 175 + linhaSoma[l] * 115, 100, 100, this);
+                                                    j += 1;
+                                                    l += 1;
+                                                    if (j == 4) {
+                                                        i += 1;
+                                                    }
+                                                    j = 0;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -303,27 +485,26 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
             @Override
             public void keyPressed(KeyEvent e) {
 
-                if (e.getKeyCode() == 65) {
+                if (e.getKeyCode() == 37 || e.getKeyCode() == 65) {
                     MovimentacaoDosBlocos.esquerda(matrizDoJogo);
+                    flagCimaOuBaixo = 1;
                 }
 
                 if (e.getKeyCode() == 38 || e.getKeyCode() == 87) {
                     MovimentacaoDosBlocos.cima(matrizDoJogo);
+                    flagCimaOuBaixo = 2;
                 }
 
                 if (e.getKeyCode() == 39 || e.getKeyCode() == 68) {
                     MovimentacaoDosBlocos.direita(matrizDoJogo);
+                    flagCimaOuBaixo = 1;
                 }
 
                 if (e.getKeyCode() == 40 || e.getKeyCode() == 83) {
                     MovimentacaoDosBlocos.baixo(matrizDoJogo);
+                    flagCimaOuBaixo = 2;
                 }
-
-                if (e.getKeyCode() == 37) {
-                    //flagReiniciar=true;
-                    flagRetornar = true;
-                }
-
+                
                 repaint();
                 flagPerdeu = MovimentacaoDosBlocos.verificarSePerdeu();
                 if (flagPerdeu == true) {
@@ -357,67 +538,90 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
             clickY = e.getY();
         } catch (java.lang.NullPointerException e1) {
         }
+
+        System.out.println("click x: " + clickX + " clickY: " + clickY);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        int deltaX = 0, deltaY = 0;
+
         try {
-            int deltaX = 0, deltaY = 0;
             soltarX = e.getX();
             soltarY = e.getY();
-            deltaX = (soltarX - clickX);
-            deltaY = (soltarY - clickY);
-            //System.out.println("click x: " + clickX + " clickY: " + clickY + "\nsoltarX: " + soltarX + " soltarY: " + soltarY);
-
-            if (deltaX < 0 && deltaY < 0) {
-                deltaX = (deltaX * (-1));
-                deltaY = (deltaY * (-1));
-                if (deltaX > deltaY) {
-                    MovimentacaoDosBlocos.esquerda(matrizDoJogo);
-                    deltaX = (deltaX * (-1));
-                    deltaY = (deltaY * (-1));
-                } else {
-                    MovimentacaoDosBlocos.cima(matrizDoJogo);
-                    deltaX = (deltaX * (-1));
-                    deltaY = (deltaY * (-1));
-                }
-            }
-
-            if (deltaX > 0 && deltaY < 0) {
-                deltaY = (deltaY * (-1));
-
-                if (deltaX > deltaY) {
-                    MovimentacaoDosBlocos.direita(matrizDoJogo);
-                    deltaY = (deltaY * (-1));
-                } else {
-                    MovimentacaoDosBlocos.cima(matrizDoJogo);
-                    deltaY = (deltaY * (-1));
-                }
-            }
-
-            if (deltaX > 0 && deltaY > 0) {
-
-                if (deltaX > deltaY) {
-                    MovimentacaoDosBlocos.direita(matrizDoJogo);
-                } else {
-                    MovimentacaoDosBlocos.baixo(matrizDoJogo);
-                }
-            }
-
-            if (deltaX < 0 && deltaY > 0) {
-                deltaX = (deltaX * (-1));
-
-                if (deltaX > deltaY) {
-                    MovimentacaoDosBlocos.esquerda(matrizDoJogo);
-                    deltaX = (deltaX * (-1));
-
-                } else {
-                    MovimentacaoDosBlocos.baixo(matrizDoJogo);
-                    deltaX = (deltaX * (-1));
-                }
-            }
         } catch (java.lang.NullPointerException e1) {
         }
+
+        if (clickX > 412 && clickX < 483 && clickY > 79 && clickY < 146) {
+            flagReiniciar = true;
+        }   else {
+            if(clickX > 492 && clickX < 563 && clickY > 79 && clickY < 146){
+              flagRetornar = true;  
+            }
+            try {
+                deltaX = (soltarX - clickX);
+                deltaY = (soltarY - clickY);
+                //System.out.println("click x: " + clickX + " clickY: " + clickY + "\nsoltarX: " + soltarX + " soltarY: " + soltarY); 
+
+                if (deltaX < 0 && deltaY < 0) {
+                    deltaX = (deltaX * (-1));
+                    deltaY = (deltaY * (-1));
+                    if (deltaX > deltaY) {
+                        MovimentacaoDosBlocos.esquerda(matrizDoJogo);
+                        flagCimaOuBaixo = 1;
+                        deltaX = (deltaX * (-1));
+                        deltaY = (deltaY * (-1));
+                    } else {
+                        MovimentacaoDosBlocos.cima(matrizDoJogo);
+                        flagCimaOuBaixo = 2;
+                        deltaX = (deltaX * (-1));
+                        deltaY = (deltaY * (-1));
+                    }
+                } else {
+                    if (deltaX > 0 && deltaY < 0) {
+                        deltaY = (deltaY * (-1));
+
+                        if (deltaX > deltaY) {
+                            MovimentacaoDosBlocos.direita(matrizDoJogo);
+                            flagCimaOuBaixo = 1;
+                            deltaY = (deltaY * (-1));
+                        } else {
+                            MovimentacaoDosBlocos.cima(matrizDoJogo);
+                            flagCimaOuBaixo = 2;
+                            deltaY = (deltaY * (-1));
+                        }
+                    } else {
+                        if (deltaX > 0 && deltaY > 0) {
+
+                            if (deltaX > deltaY) {
+                                MovimentacaoDosBlocos.direita(matrizDoJogo);
+                                flagCimaOuBaixo = 1;
+                            } else {
+                                MovimentacaoDosBlocos.baixo(matrizDoJogo);
+                                flagCimaOuBaixo = 2;
+                            }
+                        } else {
+                            if (deltaX < 0 && deltaY > 0) {
+                                deltaX = (deltaX * (-1));
+
+                                if (deltaX > deltaY) {
+                                    MovimentacaoDosBlocos.esquerda(matrizDoJogo);
+                                    flagCimaOuBaixo = 1;
+                                    deltaX = (deltaX * (-1));
+
+                                } else {
+                                    MovimentacaoDosBlocos.baixo(matrizDoJogo);
+                                    flagCimaOuBaixo = 2;
+                                    deltaX = (deltaX * (-1));
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (java.lang.NullPointerException e1) {
+            }
+        } 
+
         repaint();
         if (MovimentacaoDosBlocos.gerouAleatorio == false) {
             flagPerdeu = MovimentacaoDosBlocos.verificarSePerdeu();
@@ -462,10 +666,39 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
 
     public void setClickY(Integer clickY) {
         this.clickY = clickY;
+
     }
 
-    /*    
-    public class ReiniciarJogo extends Thread {
+    public class verificarChoqueOuSoma extends Thread {
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    sleep(400);
+                } catch (InterruptedException erro) {
+                }
+                if (linhaChoque[0] != -1 || linhaSoma[0] != -1) {
+                    for (int i = 0; i < 16; i++) {
+                        if (i < 12) {
+                            linhaChoque[i] = -1;
+                            colunaChoque[i] = -1;
+                        }
+                        linhaSoma[i] = -1;
+                        colunaSoma[i] = -1;
+                    }
+
+                    try {
+                        sleep(300);
+                    } catch (InterruptedException erro) {
+                    }
+                    repaint();
+                }
+            }
+        }
+    }
+
+    public class SelecionarComOMouse extends Thread {
 
         @Override
         public void run() {
@@ -474,49 +707,12 @@ public class TelaGraficaEDeControle extends JPanel implements MouseListener {
                     sleep(10);
                 } catch (InterruptedException erro) {
                 }
-                boolean flagVer = false;
+                Point ponto = getMousePosition();
 
-                for (int i = 0; i < 4 && flagVer == false; i++) {
-                    for (int j = 0; j < 4 && flagVer == false; j++) {
-                        if (matrizDoJogo[i][j] == 0) {
-                            flagPerdeu = false;
-                            flagVer = true;
-                        }
-                        matrizTeste[i][j] = matrizDoJogo[i][j];
-                    }
-                }
-
-                if (flagVer != true) {
-                    esquerda(matrizTeste);
-
-                    if (flagMover == false) {
-                        direita(matrizTeste);
-                    } else {
-                        flagPerdeu = false;
-                        flagVer = true;
-                    }
-                }
-
-                if (flagMover == false && flagVer != true) {
-                    cima(matrizTeste);
-                } else {
-                    flagPerdeu = false;
-                    flagVer = true;
-                }
-
-                if (flagMover == false && flagVer != true) {
-                    baixo(matrizTeste);
-                } else {
-                    flagPerdeu = false;
-                    flagVer = true;
-                }
-
-                if (flagMover == false && flagVer != true) {
-                    flagPerdeu = true;
-                }
             }
         }
-    }*/
+    }
+
     public static int getPontuacao() {
         return pontuacao;
     }

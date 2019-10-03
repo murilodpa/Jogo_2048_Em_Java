@@ -32,6 +32,4 @@ public class Jogo2048 {
            //editarJanelaFinal(); 
         });
     }
-
-    
 }
